@@ -1,2 +1,2 @@
 # IODS-project
-Template for the IODS course
+This is my IODS-project, made in 2023
