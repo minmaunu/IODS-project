@@ -15,9 +15,9 @@ date()
 
 ```
 
-I have only completed so far reading and exercises from chapter 1 and 2 and I'm panicking a little. For me it was difficult to understand how the course starts and I was confused what to complete. Also, I didn't remeber how much work 5 credits course can be :) I expect to learn how to use Github and understand R code. I hear about the course from university email. 
+I have only completed so far reading and exercises from chapter 1 and 2 and I'm panicking a little. For me it was difficult to understand how the course starts and I was confused what to complete. Also, I didn't remember how much work 5 credits course can be :) I expect to learn how to use Github and understand R code. I heard about the course from university email. 
 
-The crash course is excellent, easy to follow and understand, but I should have had more time to go it trough, because everything was new to me. So far I have only completed chapters 1 and 2 so far. 
+The crash course is excellent, easy to follow and understand, but I should have had more time to go it trough, because everything was new to me. So far I have only completed chapters 1 and 2. 
 
 
 **Github** My GitHub repository is [here](https://github.com/minmaunu/IODS-project)
