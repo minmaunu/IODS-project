@@ -1,5 +1,6 @@
 ---
 title: "IODS course project"
+author: "Minna Maunula"
 output:
   html_document:
     theme: cosmo
@@ -11,6 +12,7 @@ output:
 ---
 
 ***
+
 
 # Introduction to Open Data Science - Course Project
 

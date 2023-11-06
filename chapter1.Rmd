@@ -1,7 +1,12 @@
-
 # About the project
 
+
+## Course decription
+
+This is a course on Open Data Science.
+
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+
 
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
@@ -9,5 +14,10 @@
 date()
 
 ```
-The text continues here.
 
+I have only completed so far reading and exercises from chapter 1 and 2 and I'm panicking a little. For me it was difficult to understand how the course starts and I was confused what to complete. Also, I didn't remeber how much work 5 credits course can be :) I expect to learn how to use Github and understand R code. I hear about the course from university email. 
+
+The crash course is excellent, easy to follow and understand, but I should have had more time to go it trough, because everything was new to me. So far I have only completed chapters 1 and 2 so far. 
+
+
+**Github** My GitHub repository is [here](https://github.com/minmaunu/IODS-project)
