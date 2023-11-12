@@ -1,23 +1,3 @@
----
-
-  title: "**Introduction to Open Data Science, Assignment 2**"
-
-subtitle: "**Data wrangling and Analysis**"
-
-author: "Minna Maunula"
-date: "08 11 2023"
-output: html_document
-theme: flatly
-highlight: haddock
-toc: true
-toc_depth: 2
-number_section: false
-
----
-
-
-
-------------------------------------------------------------------------
 
 # Minna Maunula
 # Date: [12th of November 2023]
