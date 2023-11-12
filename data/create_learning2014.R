@@ -1,8 +1,7 @@
 
-
 # Minna Maunula
 # Date: [12th of November 2023]
-# File Description: This file contains script for both data wrangling and analysis of assignment 2.
+# File Description: This file contains R script for data wrangling of assignment 2.
 # Data Source: http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt
 
 ## Data wrangling
@@ -67,7 +66,6 @@ head(learning2014_final)
 # Check the structure of the final dataset
 str(learning2014_final)
 # The data has 166 observations and 7 variables. Yes!
-
 
 # Step 4: Set the working directory to the IODS Project folder
 setwd("/Users/minmaunu/IODS-project")
