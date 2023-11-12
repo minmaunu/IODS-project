@@ -1,4 +1,4 @@
-# Insert chapter 2 title here
+# Assignment 2: Data Analysis excercise
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -11,3 +11,5 @@ date()
 ```
 
 Here we go again...
+
+
