@@ -1,4 +1,5 @@
 
+
 # Minna Maunula
 # Date: [12th of November 2023]
 # File Description: This file contains script for both data wrangling and analysis of assignment 2.
