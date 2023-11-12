@@ -1,18 +1,13 @@
-# About the project
-
-
-## Course decription
+## About the project
 
 This is a course on Open Data Science.
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+## Course decription
 
+More information can be found from  [here]:(https://studies.helsinki.fi/courses/course-implementation/hy-opt-cur-2324-6bc9901d-e80d-4ba7-8bce-829e42c15521/PHD-302)
 
 ```{r}
-# This is a so-called "R chunk" where you can write R code.
-
 date()
-
 ```
 
 I have only completed so far reading and exercises from chapter 1 and 2 and I'm panicking a little. For me it was difficult to understand how the course starts and I was confused what to complete. Also, I didn't remember how much work 5 credits course can be :) I expect to learn how to use Github and understand R code. I heard about the course from university email. 
