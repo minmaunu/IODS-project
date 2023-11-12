@@ -1,15 +1,129 @@
 # Assignment 2: Data Analysis excercise
 
-*Describe the work you have done this week and summarize your learning.*
+*This week I have completed the Excercise2.Rmd, Data wrangling excercise and Data analysis where I learned some data wrangling, like modifying data sets, extracting and combining desired variables into a new data set, how to check the data, do some statistical tests and visualizations. I also spent a lot of time learning new words and concepts to better understand these statistical analyses.*
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+- Aim of this analysis is to interpret a ready made data set that is available in this website: https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt 
+
 
 ```{r}
 date()
 ```
 
-Here we go again...
+## Getting to know the data
+
+- First lets read the data into a data frame in R using command read.csv() and name it as students2014.
+- Then we can check the dimension using dim() command and structure using str() command
+
+```{r}
+
+````
+### R code
+```{r}
+students2014 <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt")
+
+dim(students2014)
+
+str(students2014)
+````
+- Data has 166 rows (observations) and 7 columns (variables)
+- age and points variables are type integers (int) that indicate numerical values, gender variable is a type character (chr) that is categorical character with two variables: female or male. Rest of the variables (attitude, deep, stra and surf) are numerical variables with different scales. 
+
+## Data visualization 
+
+- First let's check the summaries of the variables in the data using summary() commmand
+- Next let's see a graphical overview of the data using **ggplot2** library and creating a scatter plot 
+
+### R code 
+```{r}
+# students2014 is available
+
+# Access the gglot2 library
+library(ggplot2)
+
+# Summary of numeric variables
+summary(students2014)
+
+# initialize plot with data and aesthetic mapping
+p1 <- ggplot(students2014, aes(x = attitude, y = points))
+
+# define the visualization type (points)
+p2 <- p1 + geom_point()
+
+# draw the plot
+p2
+
+# add a regression line
+p3 <- p2 + geom_smooth(method = "lm")
+
+# add a main title
+p4 <- p3 + ggtitle("Student's attitude versus exam points")
+
+# draw the plot!
+p4
+```
+
+### Description and interpretion of the outputs
+- Summary shows a summary of numeric values from data set like minimum, maximum, median, mean and quartiles. 
+- p2 is a scatterplot with regression Line, where where attitude is on the x-axis and points is on the y-axis.
+- Then linear regression line is added to p3 to visualize the relationship between attitude and points.
+- Finally a tittle ("Student's attitude versus exam points") is added to p4. 
+- The distribution of the exam points is quite variable, and based on the mean students have gotten over 22.72 points from the exam. The slope of the regression line is upward, so we can interpret that there is a positive relationship between the exam points and attitude --> higher attitudes are associated with higher exam points.
+
+## Statistical test to interpret a statistically significant relationship with the explanatory variable and target variables
+
+-  Let's choose three variables (age, attitude, and deep) as explanatory variables, and points as the target variable and form a linear regression model from those. 
+
+### R code
+```{r}
+# students2014 is available
+
+# Access the gglot2 library
+library(ggplot2)
+
+model <- lm(points ~ age + attitude + deep, data = students2014)
+
+# Summary of the fitted model
+summary(model)
+
+model2 <- lm(points ~ attitude, data = students2014)
+
+# Summary of the fitted model2
+summary(model2)
+````
+## Explanation of the relationship between the chosen explanatory variables and the target variable and the multiple R-squared of the model 
+
+- Based on summary we can see a summary of the fitted model, including coefficients, standard errors, t-values, and p-values.
+- If the coefficient is positive it indicates a positive relationship, and if it's negative, it indicates a negative relationship between the target variable (points) and explanatory variable (age, attitude or deep)
+- The standard errors measure the variability of the estimated coefficients.
+- Smaller the standard errors are, usually means more precise estimates.
+- t-value can be calculated by dividing the coefficient by its standard error. Results can be excepted to be significant, the higher the t-values are.
+- If p-value is below treshold of 0.05 (that is commonly used) the variable can be assumed to be statistically significant. Smaller the p-value, stronger the evidence against the null hypothesis. In this fitted model the p-value for  attitude is very low (4.12e-09) --> so age and deep variables were removed.
+- The multiple R-squared is 0.1906. This means that approximately 19.06% of the variability in exam points is explained by the attitude variable.
+-  Lastly, there is a lot of variability in exam points, but only with these factors it's impossible to know why. --> Some other factors in the original data set could explain this variability better. 
 
 
+## Diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage.
+
+### R code
+```{r}
+# students2014 and model2 is available
+
+# Place the following 4 graphics to one plot with plot layout of 2x2
+par(mfrow = c(2,2))
+
+# draw diagnostic plots using the plot() function. Choose the plots 1, 2 and 5
+plot(model2, which = c(1, 2, 5))
+````
+
+## Explanation of the assumptions of the model and interpret the validity of those assumptions based on the diagnostic plots
+
+1. Plot on Residuals vs Fitted Values:
+If the relationship between fitted values and residuals are uncorrelated, they should form linear model. So the relationship between residuals and fitted values is random and without a clear pattern. If it something else than linear (like curve or funnel) it indicates broken linearity assumption. --> Conclusions: Points are scattered and no specific pattern is shown. Plot seems also linear. Linearity assumption is valid.
+
+2. Normal QQ-plot:
+Normal QQ-plot is used to check whether or not a set of data follows a normal distribution. If it does, the points should form a straight line. However, is the points deviate the data is less likely to follow a normal distribution.--> Conclusions: The points follow the diagonal line pretty well, but some deviations can be seen in the "tails". Still, it's ok to assume that the data is normally distributed. 
+
+3. Residuals vs Leverage:
+This plot shows each observation as a single point within the plot. The x-axis shows the leverage of each point and the y-axis shows the standardized residual of each point. Leverage is the change in the coefficients of the regression model if a particular observation is removed from the data.The standardised residual refers to the standardised difference between the predicted value of an observation and the actual value of the observation. --> Conclusions: The residuals are spread relatively constantly and no influential points can't be observed. 
+
+Done! 

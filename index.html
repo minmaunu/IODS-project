@@ -415,7 +415,7 @@ assumptions based on the diagnostic plots</a></li>
 <h2>Course decription</h2>
 <p>More information can be found from [here]:(<a href="https://studies.helsinki.fi/courses/course-implementation/hy-opt-cur-2324-6bc9901d-e80d-4ba7-8bce-829e42c15521/PHD-302" class="uri">https://studies.helsinki.fi/courses/course-implementation/hy-opt-cur-2324-6bc9901d-e80d-4ba7-8bce-829e42c15521/PHD-302</a>)</p>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Sun Nov 12 16:05:53 2023&quot;</code></pre>
+<pre><code>## [1] &quot;Sun Nov 12 22:02:08 2023&quot;</code></pre>
 <p>I have only completed so far reading and exercises from chapter 1 and
 2 and I’m panicking a little. For me it was difficult to understand how
 the course starts and I was confused what to complete. Also, I didn’t
@@ -431,20 +431,18 @@ me. So far I have only completed chapters 1 and 2.</p>
 </div>
 <div id="assignment-2-data-analysis-excercise" class="section level1">
 <h1>Assignment 2: Data Analysis excercise</h1>
-<p><em>Describe the work you have done this week and summarize your
-learning.</em></p>
+<p><em>This week I have completed the Excercise2.Rmd, Data wrangling
+excercise and Data analysis where I learned some data wrangling, like
+modifying data sets, extracting and combining desired variables into a
+new data set, how to check the data, do some statistical tests and
+visualizations. I also spent a lot of time learning new words and
+concepts to better understand these statistical analyses.</em></p>
 <ul>
-<li><p>Describe your work and results clearly.</p></li>
-<li><p>Assume the reader has an introductory course level understanding
-of writing and reading R code as well as statistical methods.</p></li>
-<li><p>Assume the reader has no previous knowledge of your data or the
-more advanced methods you are using.</p></li>
-<li><p>Aim of this analysis is to interpret a ready made data set that
-is available in this website: <a href="https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt" class="uri">https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt</a></p></li>
+<li>Aim of this analysis is to interpret a ready made data set that is
+available in this website: <a href="https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt" class="uri">https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt</a></li>
 </ul>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Sun Nov 12 16:05:53 2023&quot;</code></pre>
-<p>Here we go again…</p>
+<pre><code>## [1] &quot;Sun Nov 12 22:02:08 2023&quot;</code></pre>
 <div id="getting-to-know-the-data" class="section level2">
 <h2>Getting to know the data</h2>
 <ul>
@@ -660,6 +658,32 @@ plot(model2, which = c(1, 2, 5))</code></pre>
 <div id="explanation-of-the-assumptions-of-the-model-and-interpret-the-validity-of-those-assumptions-based-on-the-diagnostic-plots" class="section level2">
 <h2>Explanation of the assumptions of the model and interpret the
 validity of those assumptions based on the diagnostic plots</h2>
+<ol style="list-style-type: decimal">
+<li><p>Plot on Residuals vs Fitted Values: If the relationship between
+fitted values and residuals are uncorrelated, they should form linear
+model. So the relationship between residuals and fitted values is random
+and without a clear pattern. If it something else than linear (like
+curve or funnel) it indicates broken linearity assumption. –&gt;
+Conclusions: Points are scattered and no specific pattern is shown. Plot
+seems also linear. Linearity assumption is valid.</p></li>
+<li><p>Normal QQ-plot: Normal QQ-plot is used to check whether or not a
+set of data follows a normal distribution. If it does, the points should
+form a straight line. However, is the points deviate the data is less
+likely to follow a normal distribution.–&gt; Conclusions: The points
+follow the diagonal line pretty well, but some deviations can be seen in
+the “tails”. Still, it’s ok to assume that the data is normally
+distributed.</p></li>
+<li><p>Residuals vs Leverage: This plot shows each observation as a
+single point within the plot. The x-axis shows the leverage of each
+point and the y-axis shows the standardized residual of each point.
+Leverage is the change in the coefficients of the regression model if a
+particular observation is removed from the data.The standardised
+residual refers to the standardised difference between the predicted
+value of an observation and the actual value of the observation. –&gt;
+Conclusions: The residuals are spread relatively constantly and no
+influential points can’t be observed.</p></li>
+</ol>
+<p>Done!</p>
 <hr />
 <p>(more chapters to be added similarly as we proceed with the
 course!)</p>
