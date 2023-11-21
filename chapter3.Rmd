@@ -1,6 +1,6 @@
 # Assignment 3: Data Analysis excercise
 
-*This week...*
+*This week the aim is to statistically investigate a dataset related to student performance and alcohol consumpion in secondary education of two Portuguese schools. *
 
 
 ```{r}
@@ -8,13 +8,9 @@ date()
 ```
 
 
-Aim of this analysis is to interpret a ready made data set that is available [here]: (https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv)
+Data set is available [here](https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv)
 
-### R code
-```{r}
-
-````
-
+## Reading data into R
 
 ### R code
 ```{r}
@@ -32,10 +28,7 @@ colnames(alc)
 
 This dataset is downloaded from the UCI Machine Learning Repository and related to student performance in secondary education of two Portuguese schools. The data is orginated from reports and questionnaires and contains variables that include features like age, gender, family background, study time, and various academic performance metrics (e.g., grades). The dataset contains also information about the students' alcohol consumption during weekdays and weekends.
 
-### R code
-```{r}
-
-````
+## Associations with alcohol consumption, study period, gender and age
 
 Lets choose following variables to study their relationship with alcohol consumption : study time, sex and age. 
 
@@ -58,17 +51,6 @@ cross_tab_walc_studytime <- table(alc$studytime, alc$Walc)
 print(cross_tab_walc_studytime)
 
 ````
-summary(alc$Walc)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   1.000   2.000   2.295   3.000   5.000 
-  
- summary(alc$Dalc)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   1.000   1.000   1.484   2.000   5.000 
-  
-  summary(alc$studytime)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.000   1.000   2.000   2.043   2.000   4.000 
   
 Because the Mean value for Walc is slightly bigger than for Dalc, let's focus on weekly alcohol consumption
 
@@ -179,7 +161,9 @@ print(alc_age_box_plot)
 ````
 
   
-Average weekend alcohol consumption seems to increase slightly from 15 to 17 years old students, but after that decrease until thei are 20 years old and again increase a lot when students are 22 years old. After inspecting the box plot, it seems that the data has some outliers in age groups of 15, 17, 20 and 22 that can influence the overall patterns observed in the relationship between age and alcohol consumption. To  investigate this, let's calculate the correlation coefficient between age and acolohol consumption. 
+Average weekend alcohol consumption seems to increase slightly from 15 to 17 years old students, but after that decrease until thei are 20 years old and again increase a lot when students are 22 years old. After inspecting the box plot, it seems that the data has some outliers in age groups of 15, 17, 20 and 22 that can influence the overall patterns observed in the relationship between age and alcohol consumption. To  investigate this, let's calculate the correlation coefficient between age and alcohol consumption. 
+
+## Correlation coefficient between age and alcohol consumption 
 
 ### R code
 ```{r}
@@ -197,8 +181,146 @@ The correlation coefficient will be a value between -1 and 1. If the value is po
 The correlation coefficient between age and Walc is [1] 0.1551427. This value is very close to 0, but still positive so it means age has very minor but a positive correlation between alcohol consumption during the weekend.
 
 
+## Generalized Linear Models 
+
+Let's perform logistic regression model and use high_use as the binary outcome variable, and study time, sex, and age as the predictor variables. The family = "binomial" argument specifies logistic regression.
+
+### R code
+```{r}
+# Fit logistic regression model
+logistic_model <- glm(high_use ~ studytime + sex + age, data = alc, family = "binomial")
+
+# Summarize the fitted model
+summary(logistic_model)
+````
+
+Based on this logistic regression model it seems that each predictor variable is associated with the "high_use" of alcohol. The p-values suggest that study time (p-value of 0.00190), sex (p-value of 0.00426), and age (p-value of 0.04161) are statistically significant predictors of alcohol consumption. 
+
+The coefficient for sexM and are positive. So when age increases, the "high_use" category (high alcohol consumtpion) also increases. It is also related to sex and males have higher alcohol consumption. The coefficient for studytime is negative, indicating that as study time increases, the log odds of being in the "high_use" category decrease.
 
 
+### R code
+```{r}
+# Extract odds ratios and confidence intervals
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- confint(logistic_model)
+
+# Print odds ratios and confidence intervals
+print("Odds Ratios:")
+print(odds_ratios)
+print("Confidence Intervals:")
+print(conf_intervals)
+````
+
+
+Odds ratio for study time is 0.60825171 --> So that means that for each one-unit increase in study time, the odds of being in the "high_use" category decreases by approximately 39.2% (1 - 0.6082).
+
+Odds ratio for sex (sexM) is 2.02832763 --> meaning that males have approximately 2.03 times the odds of being in the "high_use" category compared to females.
+
+Odds Ratio for age is 1.22807258 --> Each one-unit increase in age, means that the odds of being in the "high_use" category increases by approximately 22.8% (1.2281 - 1).
+
+
+### R code
+```{r}
+print("Confidence Intervals:")
+print(conf_intervals)
+````
+If confidence intervals includes 0 or 1, it suggests that the parameter is not statistically significant. In this data set, confidence intervals for study time (-0.8211, -0.1919), sex (0.2245, 1.1963) and age (0.0097, 0.4061) do not include 0 for coefficients and do not include 1 for odds ratios --> We can be 95% confident that these variables have a true effect on being in the "high_use" category and thus are statistically significant.
+
+## predictive power of the model
+
+### R code
+```{r}
+# Make predictions using the logistic regression model
+predictions <- predict(logistic_model, type = "response")
+
+# Convert predicted probabilities to binary predictions (0 or 1)
+predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+
+# Create a data frame with actual and predicted values
+prediction_df <- data.frame(Actual = alc$high_use, Predicted = predicted_classes)
+
+# 2x2 Cross-tabulation
+confusion_matrix <- table(prediction_df$Actual, prediction_df$Predicted)
+print("Confusion Matrix:")
+print(confusion_matrix)
+````
+
+
+```{r}
+# Calculate training error (proportion of inaccurately classified individuals)
+training_error <- mean(prediction_df$Actual != prediction_df$Predicted)
+print(paste("Training Error:", training_error))
+
+# Display a graphic visualizing actual values and predictions
+library(ggplot2)
+
+# Scatter plot of age versus studytime
+age_studytime_scatter_plot <- ggplot(prediction_df, aes(x = alc$age, y = alc$studytime, color = factor(Predicted))) +
+  geom_point() +
+  labs(title = "Scatter Plot of Age vs. Study Time with Predictions",
+       x = "Age",
+       y = "Study Time",
+       color = "Predicted") +
+  theme_minimal()
+
+print(age_studytime_scatter_plot)
+````
+
+
+
+
+
+```{r}
+# Remove rows with missing values in the 'high_use' column
+alc_no_missing <- alc[complete.cases(alc$high_use), ]
+
+# Compare with a simple guessing strategy for the majority class
+majority_class <- as.numeric(names(sort(table(alc_no_missing$high_use), decreasing = TRUE))[1])
+simple_guessing <- rep(majority_class, nrow(alc_no_missing))
+
+# Calculate training error for the simple guessing strategy
+simple_guessing_error <- mean(alc_no_missing$high_use != simple_guessing)
+print(paste("Simple Guessing Error:", simple_guessing_error))
+````
+
+
+## 10-fold cross-validation 
+
+### R code
+```{r}
+library(boot)
+
+# Define the logistic regression model
+logistic_model <- glm(high_use ~ studytime + sex + age, data = alc, family = "binomial")
+
+# Define the logistic regression model function for cross-validation
+logistic_model_func <- function(data, indices) {
+  train_data <- data[indices, ]
+  test_data <- data[-indices, ]
+  
+  # Fit the logistic regression model on the training data
+  model <- glm(high_use ~ studytime + sex + age, data = train_data, family = "binomial")
+  
+  # Make predictions on the test data
+  predictions <- predict(model, test_data, type = "response")
+  
+  # Convert predicted probabilities to binary predictions
+  predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+  
+  # Return the predicted classes for the test set
+  return(predicted_classes)
+}
+
+# Perform 10-fold cross-validation
+cv_results <- cv.glm(data = alc, glmfit = logistic_model, K = 10)
+
+# Calculate the average error across folds
+cv_error <- mean(cv_results$delta)
+
+# Print the cross-validation error
+print(paste("10-Fold Cross-Validation Error:", cv_error))
+````
 
 
 
