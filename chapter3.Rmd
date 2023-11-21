@@ -1,0 +1,204 @@
+# Assignment 3: Data Analysis excercise
+
+*This week...*
+
+
+```{r}
+date()
+```
+
+
+Aim of this analysis is to interpret a ready made data set that is available [here]: (https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv)
+
+### R code
+```{r}
+
+````
+
+
+### R code
+```{r}
+# Read the data table in R from liked file and save it as "alc" using comma as the column separator. First row includes column names. 
+alc <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv", sep=",", header=TRUE)
+
+# Load required libraries
+library(dplyr)
+library(ggplot2)
+
+# print out the names of the variables in the data
+colnames(alc)
+
+````
+
+This dataset is downloaded from the UCI Machine Learning Repository and related to student performance in secondary education of two Portuguese schools. The data is orginated from reports and questionnaires and contains variables that include features like age, gender, family background, study time, and various academic performance metrics (e.g., grades). The dataset contains also information about the students' alcohol consumption during weekdays and weekends.
+
+### R code
+```{r}
+
+````
+
+Lets choose following variables to study their relationship with alcohol consumption : study time, sex and age. 
+
+First let's look at the distribution of alcohol consumption ('Walc' for weekends and 'Dalc' for weekdays) and its relationship with the variable 'studytime'.
+
+### R code
+```{r}
+# Explore the dataset structure
+glimpse(alc)
+
+# data has 370 rows and 35 columns
+
+# Summary statistics of relevant variables
+summary(alc$Walc)
+summary(alc$Dalc)
+summary(alc$studytime)
+
+# Cross-tabulation of studytime and Walc
+cross_tab_walc_studytime <- table(alc$studytime, alc$Walc)
+print(cross_tab_walc_studytime)
+
+````
+summary(alc$Walc)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   1.000   2.000   2.295   3.000   5.000 
+  
+ summary(alc$Dalc)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   1.000   1.000   1.484   2.000   5.000 
+  
+  summary(alc$studytime)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   1.000   2.000   2.043   2.000   4.000 
+  
+Because the Mean value for Walc is slightly bigger than for Dalc, let's focus on weekly alcohol consumption
+
+ 
+### R code
+```{r}
+# Bar plot of average Walc for each level of studytime
+alc_studytime_bar_plot <- ggplot(alc, aes(x = as.factor(studytime), y = Walc)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +
+  labs(title = "Average Weekend Alcohol Consumption by Study Time",
+       x = "Study Time",
+       y = "Average Weekend Alcohol Consumption")
+
+print(alc_studytime_bar_plot)
+````
+
+
+### R code
+```{r}
+# Box plot of Walc by studytime
+alc_studytime_box_plot <- ggplot(alc, aes(x = as.factor(studytime), y = Walc)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Weekend Alcohol Consumption by Study Time",
+       x = "Study Time",
+       y = "Weekend Alcohol Consumption")
+
+print(alc_studytime_box_plot)
+````
+
+Alcohol consumption vary across different levels of study time and it seems that students with higher study times have lower average alcohol consumption. 
+
+Then let's look at the distribution of alcohol consumption ('Walc' for weekends and 'Dalc' for weekdays) and its relationship with the variable 'sex'.
+
+### R code
+```{r}
+# Summary statistics of relevant variables
+summary(alc$sex)
+
+# Cross-tabulation of sex and Walc
+cross_tab_sex <- table(alc$sex, alc$Walc)
+print(cross_tab_sex)
+````
+
+
+### R code
+```{r}
+# Bar plot of average Walc for each level of sex
+alc_sex_bar_plot <- ggplot(alc, aes(x = as.factor(sex), y = Walc)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +
+  labs(title = "Average Weekend Alcohol Consumption by sex",
+       x = "sex",
+       y = "Average Weekend Alcohol Consumption")
+
+print(alc_sex_bar_plot)
+````
+
+
+### R code
+```{r}
+# Box plot of Walc by sex
+alc_sex_box_plot <- ggplot(alc, aes(x = as.factor(sex), y = Walc)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Weekend Alcohol Consumption by sex",
+       x = "sex",
+       y = "Weekend Alcohol Consumption")
+
+print(alc_sex_box_plot)
+````
+
+Average weekend alcohol consumption seems to be slightly higher with males than females. 
+
+Lastly, let's look at the distribution of alcohol consumption ('Walc' for weekends) and its relationship with the variable 'age'.
+
+### R code
+```{r}
+# Summary statistics of age
+summary(alc$age)
+
+# Cross-tabulation of age and Walc
+cross_tab_age <- table(alc$age, alc$Walc)
+print(cross_tab_age)
+
+````
+
+
+### R code
+```{r}
+# Bar plot of average Walc for each level of age
+alc_age_bar_plot <- ggplot(alc, aes(x = as.factor(age), y = Walc)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +
+  labs(title = "Average Weekend Alcohol Consumption by age",
+       x = "age",
+       y = "Average Weekend Alcohol Consumption")
+
+print(alc_age_bar_plot)
+````
+
+### R code
+```{r}
+# Box plot of Walc by age
+alc_age_box_plot <- ggplot(alc, aes(x = as.factor(age), y = Walc)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Weekend Alcohol Consumption by age",
+       x = "age",
+       y = "Weekend Alcohol Consumption")
+
+print(alc_age_box_plot)
+````
+
+  
+Average weekend alcohol consumption seems to increase slightly from 15 to 17 years old students, but after that decrease until thei are 20 years old and again increase a lot when students are 22 years old. After inspecting the box plot, it seems that the data has some outliers in age groups of 15, 17, 20 and 22 that can influence the overall patterns observed in the relationship between age and alcohol consumption. To  investigate this, let's calculate the correlation coefficient between age and acolohol consumption. 
+
+### R code
+```{r}
+# Calculate the correlation coefficient between age and Walc
+correlation_walc_age <- cor(alc$age, alc$Walc)
+
+# Print the correlation coefficient
+print(correlation_walc_age)
+
+````
+
+
+The correlation coefficient will be a value between -1 and 1. If the value is positive, it has positive correlation and if negative it has negative correlation. If the value is either 1 and -1 it indicates a perfect correlation, and 0 indicates no correlation. 
+
+The correlation coefficient between age and Walc is [1] 0.1551427. This value is very close to 0, but still positive so it means age has very minor but a positive correlation between alcohol consumption during the weekend.
+
+
+
+
+
+
+
