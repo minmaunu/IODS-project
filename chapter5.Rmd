@@ -1,0 +1,145 @@
+# Assignment 5: Data Analysis excercise
+
+
+```{r}
+date()
+```
+
+## Reading data into R
+
+```{r}
+# Load required libraries
+library("dplyr")
+library("readr")
+library("GGally")
+
+# Specify the file path into CSV file
+file_path <- "/Users/minmaunu/IODS-project/data/human.csv"
+
+# Read the CSV file into a data frame
+human <- read_csv(file_path)
+
+# Explore the datasets
+
+# See the structure of the data.
+str(human)
+
+# See the dimension of the data.
+dim(human)
+
+```
+
+## Overview of the data
+
+```{r}
+# move the country names to rownames
+library(tibble)
+human_ <- column_to_rownames(human, "Country")
+
+# Access GGally
+library(GGally)
+
+# visualize the 'human_' variables
+ggpairs(human_, progress = FALSE)
+```
+
+```{r}
+# Check the summary
+summary(human_)
+```
+
+Most variables seem to be quite normally distributed, except GNI, maternal mortality and adolescent birth rate are skewed. There are many variables that correlate between each other, such as expected education and life expectancy have strong positive correlation, where as maternal mortality life expectancy have strong negative correlation.
+
+## PCA on the non-standardized data
+
+```{r}
+# perform PCA
+pca_human <- prcomp(human_)
+s <-summary(pca_human)
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("darkblue", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+
+```
+
+There is a large variation in GNI (thus GNI explains 100% of the variation), so we need to standardize the data.
+
+
+## PCA on the standardized data
+
+```{r}
+# standardize the human data
+human_scaled <- scale(human_)
+pca_human <- prcomp(human_scaled)
+
+#print out the summary 
+s <- summary(pca_human)
+
+# rounded percentanges of variance captured by each PC
+pca_pr <- round(100*s$importance[2, ], digits = 1)
+pca_pr
+
+```
+
+
+```{r}
+# New PCA with standardized data
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+biplot(pca_human, cex = c(0.8, 1), col = c("darkblue", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+
+```
+
+Biplot looks much better now after scaling! PC1 axis tells us that 51% of the variation can be explained by education, life expactancy and GNI, when maternal mortality and adolescent birth rate (arrow to the right) correlate negatively with these variables (arrow to the left). The PC2 axis shows that women’s working and representation in parlament explain 16.2% of the variation.
+
+## Explore Tea Data Set
+
+```{r}
+# Load the data into R 
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+
+# Load needed libraries
+library(FactoMineR)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+
+# Explore the data set 
+str(tea)
+dim(tea)
+View(tea)
+```
+
+The Tea data set has 300 observations and 36 variables. It contains data from tea consumption and habits. Variable Age is integer while all others are factor variables. 
+
+## 
+
+```{r}
+# Visualize the data set
+gather(tea) %>% ggplot(aes(value)) + geom_bar() + facet_wrap("key", scales = "free") + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
+
+```
+
+Unfortunately I don't know why this figure looks like this. Not happy with it! 
+
+## Multiple Correspondence Analysis (MCA) with selected variables
+
+```{r}
+# column names to keep in the dataset
+keep_columns <- c("Tea", "frequency", "sex", "work", "age_Q")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- select(tea, keep_columns)
+
+# look at the summaries and structure of the data
+summary(tea_time)
+str(tea_time)
+
+# visualize the dataset
+library(ggplot2)
+pivot_longer(tea_time, cols = everything()) %>% 
+  ggplot(aes(value)) + facet_wrap("name", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+Based on the selected variables, 15-24 year old drink the most tea. Most drink tea more than 2 times a day, with women drinking slightly more than men. The most popular type of tea is Earl Grey compared to green or black tea. People are more than 2 times more likely to drink tea outside the workplace. 
