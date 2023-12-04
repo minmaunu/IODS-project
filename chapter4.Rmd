@@ -1,0 +1,214 @@
+# Assignment 4: Data Analysis excercise
+
+
+```{r}
+date()
+```
+
+
+The Boston data set is available in R and can be downloaded from the MASS package. It contains information on housing values in suburbs of Boston. Each row represents a different town, and each column are variables that provide various aspects of the towns.
+
+
+## Reading data into R
+
+
+
+```{r}
+# access the MASS package
+library(MASS)
+
+# load the data
+data("Boston")
+
+# explore the structure of the data set
+str(Boston)
+# exlpore the dimension of the data set
+dim(Boston)
+
+```
+ 
+Boston data set has 506 observations (rows) and 14 variables (columns), most variables are numeric except chas is integer. 
+
+## Graphical overview of the data
+
+Following shows a graphical overview and summaries of the variables in the data. Some distributions of variables and the relationships between them are also discussed.
+
+
+```{r}
+# Look at the structure of the data set 
+summary(Boston)
+
+# plot matrix of the variables
+pairs(Boston)
+
+# Access tidyr and corrplot libraries
+library(tidyr)
+library(corrplot)
+
+# calculate the correlation matrix and round it
+cor_matrix <- Boston %>% 
+  cor() %>% 
+  round(2)
+
+# print the correlation matrix
+print(cor_matrix)
+
+# visualize the correlation matrix
+corrplot(cor_matrix, method="circle", type = "upper", cl.pos = "b", tl.pos = "d", tl.cex = 0.6) %>% summary()
+
+
+```
+
+
+The correlation matrix shows the pairwise correlations between variables. This indicates the strength and direction of linear relationships. Positive values indicate a positive linear relationship, negative values indicate a negative linear relationship, and values close to zero suggest a weak or no linear relationship. Since eyeballing the correlation matrix can be quite challenging with bigger data sets and also with this one, I use the corrplot visualization to intrepet the correaltions. Strong negative or positive correlations (closer to -1 or 1) have darker color (red close to -1 and blue close to 1.). Also size of the circle is indicating the magnitude of the correlation.
+
+Some of the variables are highly correlated, either negatively or positively. Strongly negatively correlated values are i.e. lower status of the population (lstat) and median value of owner-occupied homes in $1000 (medv). Strongly positively correlated values are i.e. full-value property-tax rate per $10,000 (tax) and proportion of non-retail business acres per town (indus).
+
+Because they are not all normally distributed scaling of the variables is needed. 
+
+
+## Standardizing the data set 
+
+
+Standardize the dataset is standardized as follows:
+
+
+```{r}
+# center and standardize variables
+boston_scaled <- scale(Boston)
+
+# summaries of the scaled variables
+summary(boston_scaled)
+
+# class of the boston_scaled object
+class(boston_scaled)
+
+# change the object to data frame
+boston_scaled <- as.data.frame(boston_scaled)
+
+```
+
+
+## Categorize the data by crime rate 
+
+
+Then I'll create a categorical variable `crim` (per capita crime rate by town) to be our factor variable and cut the variable by quantiles to get the high, low and middle rates of crime into their own categories. After this I'll remove the original crim variable from the data set and substitute with a new one. 
+
+
+```{r}
+# create a quantile vector of crim and print it
+bins <- quantile(boston_scaled$crim)
+bins
+
+# create a categorical variable 'crime'
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+
+# look at the table of the new factor crime
+table(crime)
+
+# remove original crim from the dataset
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+
+# add the new categorical value to scaled data
+boston_scaled <- data.frame(boston_scaled, crime)
+
+```
+
+Now, data will be divided to test and train sets, with 80 % of the data going to train set. We also save the correct classes from the test set and remove the crime variable from it.
+
+
+```{r}
+# number of rows in the Boston dataset 
+n <- nrow(boston_scaled)
+
+# choose randomly 80% of the rows
+ind <- sample(n,  size = n * 0.8)
+
+# create train set
+train <- boston_scaled[ind,]
+
+# create test set 
+test <- boston_scaled[-ind,]
+
+# save the correct classes from test data
+correct_classes <- test$crime
+
+# remove the crime variable from test data
+test <- dplyr::select(test, -crime)
+
+```
+
+## linear discriminant analysis --> LDA (bi)plot
+
+The categorical crime rate is used as the target variable in the linear discriminant analysis. All the other variables in the data set are used as predictor variables. 
+
+
+```{r}
+# linear discriminant analysis
+lda.fit <- lda(crime ~ ., data = train)
+
+# print the lda.fit object
+lda.fit
+
+# target classes as numeric
+classes <- as.numeric(train$crime)
+
+# plot the lda results 
+plot(lda.fit, dimen=2, col=classes)
+
+```
+
+Next I'd save the crime categories from the test set and remove the categorical crime variable from the test dataset. Then I'd predict the crime rate in the test set using the model from the train set and cross-tabulate it with the correct classes. However, I got error from this code and were not able to fix it in time. 
+
+
+Code to save the correct classes from test data:
+correct_classes <- test$crime
+
+Code to remove the crime variable from test data:
+test <- dplyr::select(test, -crime)
+
+Code to predict classes with test data:
+lda.pred <- predict(lda.fit, newdata = test)
+
+Code to cross tabulate the results:
+table(correct = correct_classes, predicted = lda.pred$class)
+
+
+
+## Reload Boston dataset 
+
+
+```{r}
+data("Boston")
+boston_scaled <- scale(Boston)
+boston_euk_dist <- dist(boston_scaled)
+```
+
+
+Let's run the k-means clustering with 3 clusters and visualise the result with few relevant variables.
+
+
+
+```{r}
+# k-means clustering
+km <-kmeans(boston_scaled, centers = 3)
+
+# plot the Boston dataset with clusters
+pairs(boston_scaled[,6:10], col = km$cluster)
+```
+
+
+Doesn't look that good so let's try 2 instead of 3 
+
+
+```{r}
+# k-means clustering
+km <-kmeans(boston_scaled, centers = 2)
+
+# plot the Boston dataset with clusters
+pairs(boston_scaled[,6:10], col = km$cluster)
+```
+
+
+
+
